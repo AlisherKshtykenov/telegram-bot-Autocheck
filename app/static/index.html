@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Autocheck — список автомобилей</title>
+<style>
+  body { font-family: sans-serif; margin: 2rem; background: #f7f7f8; }
+  table { border-collapse: collapse; width: 100%; background: white; }
+  th, td { padding: 8px 12px; border-bottom: 1px solid #ddd; text-align: left; font-size: 14px; }
+  th { background: #222; color: white; }
+</style>
+</head>
+<body>
+  <h1>Автомобили в базе</h1>
+  <p id="count"></p>
+  <table>
+    <thead><tr>
+      <th>VIN</th><th>Марка</th><th>Модель</th><th>Год</th><th>Пробег</th><th>Дефекты</th><th>Дилер</th><th>Цена</th>
+    </tr></thead>
+    <tbody id="cars-body"></tbody>
+  </table>
+  <script>
+    async function loadCars() {
+      const res = await fetch('/cars?limit=500');
+      const cars = await res.json();
+      document.getElementById('count').textContent = `Всего: ${cars.length}`;
+      document.getElementById('cars-body').innerHTML = cars.map(c => `
+        <tr>
+          <td>${c.vin}</td><td>${c.brand}</td><td>${c.model}</td><td>${c.year}</td>
+          <td>${c.mileage.toLocaleString('ru-RU')}</td><td>${c.defects}</td>
+          <td>${c.dealer}</td><td>${c.price.toLocaleString('ru-RU')} ₸</td>
+        </tr>`).join('');
+    }
+    loadCars();
+  </script>
+</body>
+</html>
